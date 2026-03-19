@@ -3,15 +3,15 @@ ThreadPool::ThreadPool(int numThreads) : stop(false) {
     for (int i = 0; i < numThreads; ++i) {
         workers.emplace_back([this] {
             while (true) {
-                function<void()> task;
+                std::function<void()> task;
                 {
-                    unique_lock<mutex> lock(this->queueMutex);
+                    std::unique_lock<std::mutex> lock(this->queueMutex);
                     this->condition.wait(lock, [this] {
                         return this->stop.load() || !this->tasks.empty();
                     });
                     if (this->stop.load() && this->tasks.empty())
                         return;
-                    task = move(this->tasks.front());
+                    task = std::move(this->tasks.front());
                     this->tasks.pop();
                 }
                 task();
@@ -21,11 +21,11 @@ ThreadPool::ThreadPool(int numThreads) : stop(false) {
 }
 ThreadPool::~ThreadPool() {
     {
-        unique_lock<mutex> lock(queueMutex);
+        std::unique_lock<std::mutex> lock(queueMutex);
         stop = true;
     }
     condition.notify_all();
-    for (thread &worker : workers)
+    for (std::thread &worker : workers)
         worker.join();
 }
 int ThreadPool::size() const {
