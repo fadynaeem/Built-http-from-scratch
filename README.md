@@ -9,3 +9,44 @@ This repository contains a from-scratch, multi-threaded HTTP server written in C
 - `include/ThreadPool.h` / `include/ThreadPool.inl` / `src/ThreadPool.cpp` — thread pool implementation.
 - `src/main.cpp` — program entrypoint.
 - `core/App.h` / `core/App.cpp` — probable application wiring (registering routes, middleware).
+
+## Build with CMake
+
+This repository now includes a top-level `CMakeLists.txt`.
+
+### Windows (Visual Studio toolchain)
+
+1. Open an **x64 Native Tools Command Prompt for VS**.
+2. Configure and build:
+
+```powershell
+cmake -S . -B build -G "NMake Makefiles"
+cmake --build build
+```
+
+### Windows (MinGW or Ninja)
+
+```powershell
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
+```
+
+If you have Ninja installed:
+
+```powershell
+cmake -S . -B build -G Ninja
+cmake --build build
+```
+
+### Linux/macOS
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+### Run
+
+```powershell
+./build/built_http_server
+```

@@ -1,4 +1,4 @@
-#include "../../include/core/App.h"
+#include "../../include/core/app.h"
 App::App(int port, int num_threads) : server_(port, num_threads) {
 }
 void App::run() {

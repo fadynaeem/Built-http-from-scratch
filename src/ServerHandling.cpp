@@ -1,4 +1,4 @@
-#include "../include/Server.hpp"
+#include "../include/server.hpp"
 #include <iostream>
 #ifdef _WIN32
 #include <winsock2.h>
@@ -8,11 +8,12 @@
 #endif
 #include <cstring>
 #include <stdexcept>
-#include <iostream>
+
 Server::Server(int port, int num_threads) : port(port), thread_pool(num_threads) {
     setupServer();
 }
-void Server::addRoute(const string& path, const string& method, void(*handler)(Request&, Response&)) {
+
+void Server::addRoute(const std::string& path, const std::string& method, void(*handler)(Request&, Response&)) {
     if (method == "GET") {
         router.get(path, handler);
     } else if (method == "POST") {
@@ -25,30 +26,30 @@ void Server::addRoute(const string& path, const string& method, void(*handler)(R
         router.get(path, handler);
     }
 }
-void Server::use(function<void(Request&, Response&, function<void()>)> middleware) {
+
+void Server::use(std::function<void(Request&, Response&, std::function<void()>)> middleware) {
     middlewares.push_back(middleware);
 }
+
 void Server::start() {
     while (true) {
-        cout << "** server start > while(true) \n";
+        std::cout << "** server start > while(true) \n";
         socklen_t address_len = sizeof(address);
-        cout << "** address: \n";
+        std::cout << "** address: \n";
         int new_socket = accept(server_fd, (struct sockaddr*)&address, &address_len);
-        cout << "*** new_socket: " << new_socket << "\n";
+        std::cout << "*** new_socket: " << new_socket << "\n";
         if (new_socket < 0) {
-            cerr << "Failed to accept connection" << endl;
+            std::cerr << "Failed to accept connection" << std::endl;
             continue;
         }
         thread_pool.enqueue([this, new_socket]() { this->handleRequest(new_socket); });
     }
 }
+
 void Server::handleRequest(int new_socket) {
     char buffer[30000] = {0};
-#ifdef _WIN32
     int bytesRead = recv(new_socket, buffer, sizeof(buffer) - 1, 0);
-#else
-    sint bytesRead = read(new_socket, buffer, sizeof(buffer) - 1);
-#endif
+
     if (bytesRead > 0) {
         buffer[bytesRead] = '\0';
         Request request;
@@ -57,23 +58,12 @@ void Server::handleRequest(int new_socket) {
 
         processMiddlewares(request, response, 0);
 
-        string response_str = response.toString();
-        send(new_socket, response_str.c_str(), response_str.length(), 0);
+        std::string response_str = response.toString();
+        send(new_socket, response_str.c_str(), static_cast<int>(response_str.length()), 0);
     }
 #ifdef _WIN32
     closesocket(new_socket);
 #else
     close(new_socket);
 #endif
-}
-void Server::processMiddlewares(Request& request, Response& response, int index) {
-}
-// Server networking setup moved to src/ServerNetworking.cpp
-void Server::setupServer() {
-    // implementation moved to ServerNetworking.cpp
-}
-
-Router& Server::getRouter() {
-    // implementation moved to ServerNetworking.cpp
-    return this->router;
 }

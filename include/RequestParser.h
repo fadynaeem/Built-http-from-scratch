@@ -1,0 +1,6 @@
+#ifndef REQUEST_PARSER_COMPAT_H
+#define REQUEST_PARSER_COMPAT_H
+
+#include "Parser.h"
+
+#endif // REQUEST_PARSER_COMPAT_H

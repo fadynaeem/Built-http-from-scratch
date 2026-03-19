@@ -1,4 +1,4 @@
-#include "../include/Server.hpp"
+#include "../include/server.hpp"
 void Server::processMiddlewares(Request& request, Response& response,int index) {
     if (index < middlewares.size()) {
         middlewares[index](request, response, [this, &request, &response, index] {

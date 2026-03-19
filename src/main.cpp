@@ -1,5 +1,5 @@
 #include <functional>
-#include "../include/core/App.h"
+#include "../include/core/app.h"
 #include "../include/Request.h"
 #include "../include/Response.h"
 #include "../include/JSON.h"

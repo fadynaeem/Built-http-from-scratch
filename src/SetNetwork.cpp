@@ -1,6 +1,6 @@
-#include "../include/Server.hpp"
+#include "../include/server.hpp"
 #include <iostream>
-#include "../include/PlatformSockets.h"
+#include "../include/Sockets.h"
 #include <cstring>
 #include <stdexcept>
 void Server::setupServer() {
